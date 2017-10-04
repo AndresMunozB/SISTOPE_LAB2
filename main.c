@@ -38,7 +38,7 @@ void printMatriz(Matriz *matriz){
     int i,j;
     for (i=0;i<matriz->row;i++){
         for(j=0;j<matriz->col;j++){
-            matriz->data[i][j] = 'X';
+            //matriz->data[i][j] = 'X';
             printf("%c",matriz->data[i][j]);
         }
         printf("\n");
@@ -71,6 +71,28 @@ void *doSomthing(void* args){
     }
 }
 
+char randLetterMin(){
+    char random;
+    random = rand()%26;
+    random+=97;
+    return random;
+}
+
+void matriz_fill(Matriz* matriz){
+
+    int i,j;
+    char buffer;
+    srand(time(NULL)); 
+    for (i=0;i<matriz->row;i++){
+        for(j=0;j<matriz->col;j++){
+            if(matriz->data[i][j]=='\0'){
+                buffer = randLetterMin();
+                matriz->data[i][j] = buffer;
+            }
+        }
+    }
+}
+
 
 
 int main(){
@@ -78,12 +100,13 @@ int main(){
     Matriz* matriz = matriz_create(5,5);
     printf("%d\n",matriz->col);
     printf("%p\n",matriz);
+    matriz_fill(matriz);
     printMatriz(matriz);
     
     printf("%p\n",matriz);
 
-    /*
-    pthread_t h1 ;
+    
+    /*pthread_t h1 ;
     pthread_t h2 ;
     char * hola = "Hola";
     char * mundo = "mundo";
@@ -93,7 +116,7 @@ int main(){
     pthread_join ( h2 , NULL ) ;
     printf ( " Fin \n ");*/
 
-    pthread_t h1 ;
+    /*pthread_t h1 ;
     pthread_t h2 ;
     
     char a = 'a';
@@ -102,8 +125,13 @@ int main(){
     pthread_create (& h2 , NULL , doSomthing , ( void *) &b );
     pthread_join ( h1 , NULL ) ;
     pthread_join ( h2 , NULL ) ;
-    printf("%d",d);
+    printf("%d",d);*/
     matriz_destroy(matriz);
+
+    
+
+
+
     
     
  
