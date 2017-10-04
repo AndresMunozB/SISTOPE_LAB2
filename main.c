@@ -55,8 +55,9 @@ void * slowprintf ( void * arg ) {
     usleep (1000000) ;
     }
 }
-int d = 0;
 
+
+int d = 0;
 pthread_mutex_t mylock = PTHREAD_MUTEX_INITIALIZER;
 
 void *doSomthing(void* args){
