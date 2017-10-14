@@ -12,4 +12,9 @@ typedef struct position{
     int col;
 }Position;
 
+typedef struct globalParams{
+    pthread_mutex_t *mutex_array;
+    
+}GlobalParams
+
 #endif
