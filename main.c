@@ -11,10 +11,12 @@ void * slowprintf ( void * arg ) {
     int i;
     msg = ( char *) arg ;
     for ( i = 0 ; i < strlen ( msg ) ; i ++ ) {
-    printf (" %c " , msg [ i ]) ;
-    fflush ( stdout ) ;
-    usleep (1000000) ;
+        printf (" %c " , msg [ i ]) ;
+        fflush ( stdout ) ;
+        usleep (1000000) ;
     }
+    void* ret=NULL;
+    return ret;
 }
 
 
@@ -31,6 +33,8 @@ void *doSomthing(void* args){
         pthread_mutex_unlock(&mylock);
         i++;
     }
+    void* ret=NULL;
+    return ret;
 }
 
 
