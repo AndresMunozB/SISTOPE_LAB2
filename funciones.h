@@ -8,5 +8,6 @@ void matriz_destroy(Matriz* matriz);
 void printMatriz(Matriz *matriz);
 char randLetterMin();
 void matriz_fill(Matriz* matriz);
-
+void string_upper(char* string);
+    
 #endif

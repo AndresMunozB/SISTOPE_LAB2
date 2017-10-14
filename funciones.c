@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
+#include <string.h>
 #include "estructuras.h"
 #include "funciones.h"
 
@@ -56,6 +58,13 @@ void matriz_fill(Matriz* matriz){
                 matriz->data[i][j] = buffer;
             }
         }
+    }
+}
+
+void string_upper(char* string){
+    int i;
+    for(i=0;i<strlen(string);i++){
+        string[i]=toupper(string[i]);
     }
 }
 
