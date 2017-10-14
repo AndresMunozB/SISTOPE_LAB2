@@ -15,6 +15,6 @@ typedef struct position{
 typedef struct globalParams{
     pthread_mutex_t *mutex_array;
     
-}GlobalParams
+}GlobalParams;
 
 #endif
