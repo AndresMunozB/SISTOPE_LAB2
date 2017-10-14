@@ -18,4 +18,11 @@ typedef struct globalParams{
     
 }GlobalParams;
 
+typedef struct hebra{
+    int id;
+    int int_words;
+    Position position;
+    char** words;
+}Hebra;
+
 #endif

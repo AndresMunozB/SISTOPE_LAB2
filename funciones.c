@@ -68,3 +68,33 @@ void string_upper(char* string){
     }
 }
 
+Hebra* hebra_init(int id,char* nameFile,int words){
+    FILE* file = fopen(nameFile,"r");
+    //(long int)linesProccess*i
+    //fseek(file,position,SEEK_SET);
+    int i=0;
+    char buffer[10000];
+    Hebra* hebra=(Hebra*)malloc(sizeof(Hebra));
+    hebra->id = id;
+    hebra->int_words = words;
+    hebra->words = (char**)malloc(sizeof(char*)*words);
+    while(i<words){
+        memset(buffer,0,10000);
+        fscanf(file,"%s",buffer);
+        hebra->words[i] = (char*)malloc(sizeof(char)*(strlen(buffer)+1));
+        strcpy(hebra->words[i],buffer);
+        string_upper(hebra->words[i]);
+        i++;
+
+    }
+    return hebra;
+}
+void hebra_destroy(Hebra* hebra){
+    int i;
+    for(i=0;i<hebra->int_words;i++){
+        free(hebra->words[i]);
+    }
+    free(hebra->words);
+    free(hebra);
+}
+
