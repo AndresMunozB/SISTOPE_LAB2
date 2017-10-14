@@ -7,4 +7,9 @@ typedef struct matriz{
     int col;
 }Matriz;
 
+typedef struct position{
+    int row;
+    int col;
+}Position;
+
 #endif
