@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <pthread.h>
 #include "estructuras.h"
 #include "funciones2.h"
 
@@ -10,11 +11,36 @@ Matriz* matriz_create(int n,int m){
     matriz->row = n;
     matriz->col = m;
     matriz->data = (char**) malloc (sizeof(char*)*n);
+    matriz->locks = (pthread_mutex_t*) malloc (sizeof(pthread_mutex_t)*n);
     int i;
     for(i=0;i<n;i++){
         matriz->data[i] = (char*) calloc (m,sizeof(char));
     }
+    for(i=0;i<n;i++){
+
+         pthread_mutex_init(& matriz->locks[i], NULL);
+    }
     return matriz;
+}
+int can_write_row(Matriz* matriz,char* string, int row){
+    int i=0;
+    int max=0;
+    int counter=0;
+    for(i=0;i<matriz->col;i++){
+        if(matriz->data[row][i]!='\0'){
+            counter=0;
+        }
+        else{
+            counter++;
+        }
+        if(counter>max){
+            max=counter;
+        }
+    }
+    if(max<strlen(string)){
+        return 0;
+    }
+    return 1;
 }
 
 void matriz_destroy(Matriz* matriz){
@@ -83,7 +109,10 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     Hebra** hebra_array;
     int words_per_hebra;
     char buffer[250];
-    if(hebras<=words){
+    if(hebras<=0){
+        return NULL;
+    }
+    else if(hebras<=words){
        
         hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(hebras+1));
         hebra_array[hebras]=NULL;
@@ -129,6 +158,9 @@ void hebra_show(Hebra* hebra){
 }
 void hebra_array_show(Hebra** hebra_array,int n){
     int i=0;
+    if(hebra_array==NULL){
+        return;
+    }
     while (hebra_array[i]!=NULL){
         printf("Hebra:%d\n",i);
         hebra_show(hebra_array[i]);
@@ -136,3 +168,9 @@ void hebra_array_show(Hebra** hebra_array,int n){
         i++;
     }
 }
+
+void position_rand(Position* position, int row, int col){
+    position->row = rand()%row;
+    position->col = rand()%col;
+}
+

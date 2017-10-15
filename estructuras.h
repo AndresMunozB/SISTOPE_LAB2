@@ -4,6 +4,7 @@
 
 typedef struct matriz{
     char **data;
+    pthread_mutex_t* locks;
     int row;
     int col;
 }Matriz;

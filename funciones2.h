@@ -1,4 +1,5 @@
 Matriz* matriz_create(int n,int m);
+int can_write_row(Matriz* matriz,char* string, int row);    
 void matriz_destroy(Matriz* matriz);
 void matriz_show(Matriz *matriz);
 char letter_min_rand();
@@ -13,5 +14,6 @@ void string_upper(char* string);
 void rtrim(char* string);    
 Hebra** hebra_array_init(int hebras, int words, char* nameFile);
 void hebra_show(Hebra* hebra);
-void hebra_array_show(Hebra** hebra_array,int n);    
+void hebra_array_show(Hebra** hebra_array,int n);   
+void position_rand(Position* position, int row, int col);    
         
