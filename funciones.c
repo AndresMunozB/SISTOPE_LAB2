@@ -111,7 +111,7 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     FILE* file = fopen(nameFile,"r");
     
     Hebra** hebra_array;
-    int words_per_hebra;
+    //int words_per_hebra;
     char buffer[250];
     if(hebras<=0){
         return NULL;
@@ -151,6 +151,9 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     
     return hebra_array;
 }
+void hebra_destroy(Hebra* hebra){
+    free(hebra);
+}
 void hebra_show(Hebra* hebra){
     printf("int_words:%d\n",hebra->int_words);
     int i=0;
@@ -159,6 +162,20 @@ void hebra_show(Hebra* hebra){
         i++;
     }
     printf("\n");
+}
+void hebra_array_destroy(Hebra** hebra_array){
+    int i=0;
+    if(hebra_array==NULL){
+        return;
+    }
+    while (hebra_array[i]!=NULL){
+        //printf("Hebra:%d\n",i);
+        //hebra_show(hebra_array[i]);
+        //printf("\n");
+        hebra_destroy(hebra_array[i]);
+        i++;
+    }
+    free(hebra_array);
 }
 void hebra_array_show(Hebra** hebra_array){
     int i=0;

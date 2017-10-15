@@ -18,7 +18,9 @@ void string_upper(char* string);
 */
 void rtrim(char* string);    
 Hebra** hebra_array_init(int hebras, int words, char* nameFile);
+void hebra_destroy(Hebra* hebra);    
 void hebra_show(Hebra* hebra);
+void hebra_array_destroy(Hebra** hebra_array);    
 void hebra_array_show(Hebra** hebra_array);
 void position_rand(Position* position, int row, int col);   
 int is_valid_position(Matriz* matriz,char* string, Position position);

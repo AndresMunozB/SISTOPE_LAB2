@@ -33,7 +33,7 @@ void* insert(void* args){
     //printf("%d\n",index);
     int i;
     int not_next;
-    int* array_can_rows= (int*)malloc(sizeof(int)*matriz->row);
+    int array_can_rows[matriz->row];
     Position pos;
     char buffer[250];
     //printf("flag 1\n");
@@ -79,7 +79,8 @@ void* insert(void* args){
             pthread_mutex_unlock(&matriz->locks[pos.row]);
         }
     }
-    free(array_can_rows);
+    void* ret = NULL;
+    return ret;
 }
 int main(){
     srand(time(NULL));
@@ -98,14 +99,8 @@ int main(){
     }
     matriz_fill(matriz);
     matriz_show(matriz);
-
-    /*int array_can_rows[matriz->row];
-    int j=0;
-    for(j=0;j<matriz->row;j++){
-        array_can_rows[j]=1;
-    }
-    printf("Puedo escribir en matriz:%d\n",can_write(array_can_rows,matriz->row));
-    printf("Puedo escribir en fila:%d\n",can_write_row(matriz,"hola2",0));*/
+    matriz_destroy(matriz);
+    hebra_array_destroy(hebra_array);
     
     return 1;
 }
