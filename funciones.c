@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <ctype.h>
+#include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+#include <pthread.h>
 #include "estructuras.h"
 #include "funciones.h"
 
@@ -11,11 +11,36 @@ Matriz* matriz_create(int n,int m){
     matriz->row = n;
     matriz->col = m;
     matriz->data = (char**) malloc (sizeof(char*)*n);
+    matriz->locks = (pthread_mutex_t*) malloc (sizeof(pthread_mutex_t)*n);
     int i;
     for(i=0;i<n;i++){
         matriz->data[i] = (char*) calloc (m,sizeof(char));
     }
+    for(i=0;i<n;i++){
+
+         pthread_mutex_init(& matriz->locks[i], NULL);
+    }
     return matriz;
+}
+int can_write_row(Matriz* matriz,char* string, int row){
+    int i=0;
+    int max=0;
+    int counter=0;
+    for(i=0;i<matriz->col;i++){
+        if(matriz->data[row][i]!='\0'){
+            counter=0;
+        }
+        else{
+            counter++;
+        }
+        if(counter>max){
+            max=counter;
+        }
+    }
+    if(max<strlen(string)){
+        return 0;
+    }
+    return 1;
 }
 
 void matriz_destroy(Matriz* matriz){
@@ -28,7 +53,7 @@ void matriz_destroy(Matriz* matriz){
 
 }
 
-void printMatriz(Matriz *matriz){
+void matriz_show(Matriz *matriz){
     int i,j;
     for (i=0;i<matriz->row;i++){
         for(j=0;j<matriz->col;j++){
@@ -39,7 +64,7 @@ void printMatriz(Matriz *matriz){
     }
 }
 
-char randLetterMin(){
+char letter_min_rand(){
     char random;
     random = rand()%26;
     random+=97;
@@ -54,7 +79,7 @@ void matriz_fill(Matriz* matriz){
     for (i=0;i<matriz->row;i++){
         for(j=0;j<matriz->col;j++){
             if(matriz->data[i][j]=='\0'){
-                buffer = randLetterMin();
+                buffer = letter_min_rand();
                 matriz->data[i][j] = buffer;
             }
         }
@@ -68,22 +93,59 @@ void string_upper(char* string){
     }
 }
 
-Hebra* hebra_init(int id,FILE* file,int words){
-    int i=0;
-    char buffer[10000];
-    Hebra* hebra=(Hebra*)malloc(sizeof(Hebra));
-    hebra->int_words = words;
-    hebra->words = (char**)malloc(sizeof(char*)*words);
-    while(i<words){
-        memset(buffer,0,10000);
-        fscanf(file,"%s",buffer);
-        hebra->words[i] = (char*)malloc(sizeof(char)*(strlen(buffer)+1));
-        strcpy(hebra->words[i],buffer);
-        string_upper(hebra->words[i]);
-        i++;
+void rtrim(char* string){
+	while(string[strlen(string)-1]==' ' 
+		|| string[strlen(string)-1]=='\n' 
+		|| string[strlen(string)-1]=='\t'
+		|| string[strlen(string)-1]=='\r'){
+		string[strlen(string)-1]='\0';
+	}
+}
 
+Hebra** hebra_array_init(int hebras, int words, char* nameFile){
+    
+    FILE* file = fopen(nameFile,"r");
+    
+    Hebra** hebra_array;
+    int words_per_hebra;
+    char buffer[250];
+    if(hebras<=0){
+        return NULL;
     }
-    return hebra;
+    else if(hebras<=words){
+       
+        hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(hebras+1));
+        hebra_array[hebras]=NULL;
+        int j;
+        for(j=0;j<hebras;j++){
+            hebra_array[j]=(Hebra*) malloc(sizeof(Hebra));
+            hebra_array[j]->int_words = 0;
+        }
+        
+    }
+    else{
+        hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(words+1));
+        hebra_array[words]=NULL;
+        int j;
+        for(j=0;j<words;j++){
+            hebra_array[j]=(Hebra*) malloc(sizeof(Hebra));
+            hebra_array[j]->int_words = 0;
+        }
+    }
+    int i=0;
+    while(!feof(file)){
+        memset(buffer,0,250);
+        fgets(buffer,250,file);
+        rtrim(buffer);
+        //fscanf(file,"%s",buffer);
+        //if(!feof(file)){
+            strcpy(hebra_array[i%hebras]->words[hebra_array[i%hebras]->int_words],buffer);
+            hebra_array[i%hebras]->int_words++;
+            i++;
+        //}
+    }
+    
+    return hebra_array;
 }
 void hebra_show(Hebra* hebra){
     printf("int_words:%d\n",hebra->int_words);
@@ -94,110 +156,22 @@ void hebra_show(Hebra* hebra){
     }
     printf("\n");
 }
-void hebra_destroy(Hebra* hebra){
-    int i;
-    for(i=0;i<hebra->int_words;i++){
-        free(hebra->words[i]);
-    }
-    free(hebra->words);
-    free(hebra);
-}
-Hebra** hebra_array_init(int hebras, int words, char* nameFile){
-    FILE* file = fopen(nameFile,"r");
-    int counter_words=0;
-    int i;
-    Hebra** hebra_array;
-    printf("hola");
-    if(hebras<=words){
-        int words_per_hebra = words/hebras;
-        int mod_words_per_hebras = words%hebras;
-        hebra_array=(Hebra**) malloc(sizeof(Hebra*)*hebras+1);
-        for(i=0;i<hebras;i++){
-            if(i==hebras-1){
-                hebra_array[i] = hebra_init(i,file,words_per_hebra+mod_words_per_hebras);
-            }
-            else{
-                hebra_array[i] = hebra_init(i,file,words_per_hebra);
-            }
-             
-        }
-        hebra_array[hebras]=NULL;
-        return hebra_array;
-    }
-    else if(hebras>words){
-        int words_per_hebra = words/hebras;
-        int mod_words_per_hebras = words%hebras;
-        hebra_array=(Hebra**) malloc(sizeof(Hebra*)*words+1);
-        for(i=0;i<words;i++){
-            hebra_array[i] = hebra_init(i,file,1);
-        }
-        hebra_array[hebras]=NULL;
-        return hebra_array;
-    }  
-}
-
 void hebra_array_show(Hebra** hebra_array){
     int i=0;
-    while(hebra_array[i]!=NULL){
+    if(hebra_array==NULL){
+        return;
+    }
+    while (hebra_array[i]!=NULL){
+        printf("Hebra:%d\n",i);
         hebra_show(hebra_array[i]);
-        i++;
-    }
-}
-void hebra_array_destroy(Hebra** hebra_array){
-    int i=0;
-    while(hebra_array[i]!=NULL){
-        hebra_destroy(hebra_array[i]);
+        printf("\n");
         i++;
     }
 }
 
-Params* params_init(int rows,int cols,int hebras,int words,char* nameFile){
-    Params* params = (Params*) malloc(sizeof(Params));
-    params->capacity_max = (int*)malloc(sizeof(int)*rows);
-    params->mutex_array = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t)*rows);
-    params->hebra_array = (Hebra**) hebra_array_init(hebras,words,nameFile);
-    params->matriz = matriz_create(rows,cols);
-    params->rows = rows;
-    params->hebras = hebras;
-}
-
-void params_destroy(Params* params){
-    free(params->capacity_max);
-    free(params->mutex_array);
-    hebra_array_destroy(params->hebra_array);
-    matriz_destroy(params->matriz);
-    free(params);
-}
 void position_rand(Position* position, int row, int col){
     position->row = rand()%row;
     position->col = rand()%col;
-}
-
-int capacity_max(char* fila,int cols){
-    int i=0;
-    int max =0;
-    int counter=0;
-    for(i=0;i<cols;i++){
-        printf("counter: %d(%c)\n",counter,fila[i]);
-
-        if(fila[i]!='\0'){
-            counter=0;
-        }
-        else{
-            counter++;
-        }
-        if(counter>max){
-            max=counter;
-        }
-        
-    }
-    return max;
-}
-int is_valid_string(int capacity_max,char*string){
-    if(capacity_max<strlen(string)){
-        return 0;
-    }
-    return 1;
 }
 int is_valid_position(Matriz* matriz,char* string, Position position){
     int i;
@@ -212,20 +186,13 @@ int is_valid_position(Matriz* matriz,char* string, Position position){
     return 1;
     
 }
-int inser_word(Matriz* matriz, char* string,Position position){
-    if(!is_valid_position(matriz,string,position)){
-        return 0;
+
+void insert_word(Matriz* matriz, char* string,Position position){
+    int i;
+    //printf("insertando:%s\n",string);
+    for(i=0;i<strlen(string);i++){
+        matriz->data[position.row][position.col+i] = string[i]; 
     }
-    else{
-        int i;
-        for(i=0;i<strlen(string);i++){
-            matriz->data[position.row][position.col+i] = string[i]; 
-        }
-    }
-    return 1;
+    
 }
-
-
-
-
 

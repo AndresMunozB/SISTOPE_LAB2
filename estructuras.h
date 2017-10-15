@@ -20,14 +20,4 @@ typedef struct hebra{
     pthread_t thread;
 }Hebra;
 
-typedef struct params{
-    int rows;
-    int hebras;
-    int* capacity_max;
-    pthread_mutex_t *mutex_array;
-    Hebra** hebra_array;
-    Matriz* matriz;
-
-    
-}Params;
 #endif

@@ -1,99 +1,104 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <string.h>
+#include "estructuras.h"
 #include "funciones.h"
 
-void* funcion(void* arg){
-    printf("%li\n",pthread_self());
-    
-}
-void * slowprintf ( void * arg ) {
-    char * msg ;
-    int i;
-    msg = ( char *) arg ;
-    for ( i = 0 ; i < strlen ( msg ) ; i ++ ) {
-        printf (" %c " , msg [ i ]) ;
-        fflush ( stdout ) ;
-        usleep (1000000) ;
-    }
-    void* ret=NULL;
-    return ret;
-}
 
-
-int d = 0;
-pthread_mutex_t mylock = PTHREAD_MUTEX_INITIALIZER;
-
-void *doSomthing(void* args){
+Hebra** hebra_array = NULL;
+Matriz* matriz = NULL;
+int getIndex(){
+    int index;
     int i=0;
-    char *c = (char*) args;
-    while(i<1000000){
-        printf("%c-%d\n",*c,i);
-        pthread_mutex_lock(&mylock);
-        d++;
-        pthread_mutex_unlock(&mylock);
+    while(hebra_array[i]!=NULL){
+        if(hebra_array[i]->thread == pthread_self()){
+            index = i;
+        }
         i++;
     }
-    void* ret=NULL;
-    return ret;
+    return index;
 }
-
-
-
-int main(){
-
-    /*Matriz* matriz = matriz_create(5,5);
-    printf("%d\n",matriz->col);
-    printf("%p\n",matriz);
-    matriz_fill(matriz);
-    printMatriz(matriz);
-    
-    printf("%p\n",matriz);*/
-
-    
-    /*pthread_t h1 ;
-    pthread_t h2 ;
-    char * hola = "Hola";
-    char * mundo = "mundo";
-    pthread_create (& h1 , NULL , slowprintf , ( void *) hola ) ;
-    pthread_create (& h2 , NULL , slowprintf , ( void *) mundo );
-    pthread_join ( h1 , NULL ) ;
-    pthread_join ( h2 , NULL ) ;
-    printf ( " Fin \n ");*/
-    pthread_t arreglo[20];
-    int arreglo_int[20];
+int can_write(int* array,int n){
     int i;
-    for(i=0;i<20;i++){
-        arreglo_int[i]=i;
-        pthread_create(& arreglo[i] , NULL , funcion , ( void *) &arreglo_int[i] ) ;
+    for(i=0;i<n;i++){
+        if(array[i]==0){
+            return 0;
+        }
     }
+    return 1;
+}
+void* insert(void* args){
+    int index=getIndex();
+    //printf("%d\n",index);
+    int i;
+    int not_next;
+    int* array_can_rows= (int*)malloc(sizeof(int)*matriz->row);
+    Position pos;
+    char buffer[250];
+    //printf("flag 1\n");
+    for (i=0;i<hebra_array[index]->int_words;i++){
+        int j=0;
+        for(j=0;j<matriz->row;j++){
+            array_can_rows[j]=1;
+            
+        }
+        not_next = 1;
         
-    /*pthread_t h1 ;
-    pthread_t h2 ;
-    
-    char a = 'a';
-    char b = 'b';
-    pthread_create (& h1 , NULL , doSomthing , ( void *) &a ) ;
-    pthread_create (& h2 , NULL , doSomthing , ( void *) &b );
-    pthread_join ( h1 , NULL ) ;
-    pthread_join ( h2 , NULL ) ;
-    printf("%d",d);*/
-   
-   
-   
-    //matriz_destroy(matriz);
+        printf("%s\n",hebra_array[index]->words[i]);
+        int counter = 1;
+        while(can_write(array_can_rows,matriz->row) && not_next){
+            printf("intento:%d\n",counter);
+            printf("pos:%d,%d\n",pos.row,pos.col);
+            position_rand(&pos,matriz->row,matriz->col);
+            pthread_mutex_lock(&matriz->locks[pos.row]);
+            if(can_write_row(matriz,hebra_array[index]->words[i],pos.row)){
+                if(is_valid_position(matriz,hebra_array[index]->words[i],pos)){
+                    memset(buffer,0,250);
+                    strcpy(buffer,hebra_array[index]->words[i]);
+                    string_upper(buffer);
+                    insert_word(matriz,buffer,pos);
+                    not_next=0;
+                }
+            }
+            else{
+                array_can_rows[pos.row]=0;
+            }
+            counter++;
+            //matriz_show(matriz);
 
-    
 
-
-
+            
+            pthread_mutex_unlock(&matriz->locks[pos.row]);
+        }
+    }
+    free(array_can_rows);
+}
+int main(){
+    srand(time(NULL));
+    int hebras=1;
+    hebra_array = hebra_array_init(hebras,7,"words.txt");
+    hebra_array_show(hebra_array);
+    //printf("HOL!\n");
     
-    
- 
-     
-    
+    matriz = matriz_create(10,10);
+    int i;
+    for(i=0;i<hebras;i++){
+        pthread_create(&hebra_array[i]->thread , NULL , insert , NULL );
+    }
+    for(i=0;i<hebras;i++){
+        pthread_join ( hebra_array[i]->thread , NULL ) ;
+    }
+    matriz_fill(matriz);
+    matriz_show(matriz);
 
+    /*int array_can_rows[matriz->row];
+    int j=0;
+    for(j=0;j<matriz->row;j++){
+        array_can_rows[j]=1;
+    }
+    printf("Puedo escribir en matriz:%d\n",can_write(array_can_rows,matriz->row));
+    printf("Puedo escribir en fila:%d\n",can_write_row(matriz,"hola2",0));*/
+    
     return 1;
 }
