@@ -15,6 +15,10 @@ Matriz* matriz_create(int n,int m){
     int i;
     for(i=0;i<n;i++){
         matriz->data[i] = (char*) calloc (m,sizeof(char));
+        /*matriz->data[i] = (char*) malloc (sizeof(char)*m);
+        for(j=0;j<matriz->row;j++){
+            matriz->data[i][j]='x';
+        }*/
     }
     for(i=0;i<n;i++){
 
@@ -176,10 +180,12 @@ void position_rand(Position* position, int row, int col){
 int is_valid_position(Matriz* matriz,char* string, Position position){
     int i;
     if(position.col+strlen(string)-1>=matriz->col){
+        //printf("se sale de matriz\n");
         return 0;
     }
     for (i=0;i<strlen(string);i++){
         if(matriz->data[position.row][i+position.col]!= '\0'){
+            //printf("caracter no vacio:%c-%d,%d",matriz->data[position.row][i+position.col],position.row,position.col);
             return 0;
         }
     }

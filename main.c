@@ -22,11 +22,11 @@ int getIndex(){
 int can_write(int* array,int n){
     int i;
     for(i=0;i<n;i++){
-        if(array[i]==0){
-            return 0;
+        if(array[i]==1){
+            return 1;
         }
     }
-    return 1;
+    return 0;
 }
 void* insert(void* args){
     int index=getIndex();
@@ -45,23 +45,30 @@ void* insert(void* args){
         }
         not_next = 1;
         
-        printf("%s\n",hebra_array[index]->words[i]);
+        //printf("%s\n",hebra_array[index]->words[i]);
         int counter = 1;
         while(can_write(array_can_rows,matriz->row) && not_next){
-            printf("intento:%d\n",counter);
-            printf("pos:%d,%d\n",pos.row,pos.col);
+            //printf("intento:%d\n",counter);
+            //printf("pos:%d,%d\n",pos.row,pos.col);
             position_rand(&pos,matriz->row,matriz->col);
             pthread_mutex_lock(&matriz->locks[pos.row]);
             if(can_write_row(matriz,hebra_array[index]->words[i],pos.row)){
+                //printf("puede escribir en linea\n");
                 if(is_valid_position(matriz,hebra_array[index]->words[i],pos)){
+
                     memset(buffer,0,250);
                     strcpy(buffer,hebra_array[index]->words[i]);
                     string_upper(buffer);
                     insert_word(matriz,buffer,pos);
                     not_next=0;
+                    //printf("posicion valida,inserted\n");
+                }
+                else{
+                    //printf("posicion invalida\n");
                 }
             }
             else{
+                //printf("no puede escribir en linea\n");
                 array_can_rows[pos.row]=0;
             }
             counter++;
@@ -76,7 +83,7 @@ void* insert(void* args){
 }
 int main(){
     srand(time(NULL));
-    int hebras=1;
+    int hebras=5;
     hebra_array = hebra_array_init(hebras,7,"words.txt");
     hebra_array_show(hebra_array);
     //printf("HOL!\n");
