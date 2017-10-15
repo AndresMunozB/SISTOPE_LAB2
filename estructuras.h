@@ -13,16 +13,20 @@ typedef struct position{
     int col;
 }Position;
 
-typedef struct globalParams{
-    pthread_mutex_t *mutex_array;
-    
-}GlobalParams;
-
 typedef struct hebra{
-    int id;
     int int_words;
-    Position position;
-    char** words;
+    char words[3000][250];
+    pthread_t thread;
 }Hebra;
 
+typedef struct params{
+    int rows;
+    int hebras;
+    int* capacity_max;
+    pthread_mutex_t *mutex_array;
+    Hebra** hebra_array;
+    Matriz* matriz;
+
+    
+}Params;
 #endif

@@ -5,7 +5,10 @@
 #include <string.h>
 #include "funciones.h"
 
-
+void* funcion(void* arg){
+    printf("%li\n",pthread_self());
+    
+}
 void * slowprintf ( void * arg ) {
     char * msg ;
     int i;
@@ -41,13 +44,13 @@ void *doSomthing(void* args){
 
 int main(){
 
-    Matriz* matriz = matriz_create(5,5);
+    /*Matriz* matriz = matriz_create(5,5);
     printf("%d\n",matriz->col);
     printf("%p\n",matriz);
     matriz_fill(matriz);
     printMatriz(matriz);
     
-    printf("%p\n",matriz);
+    printf("%p\n",matriz);*/
 
     
     /*pthread_t h1 ;
@@ -59,7 +62,14 @@ int main(){
     pthread_join ( h1 , NULL ) ;
     pthread_join ( h2 , NULL ) ;
     printf ( " Fin \n ");*/
-
+    pthread_t arreglo[20];
+    int arreglo_int[20];
+    int i;
+    for(i=0;i<20;i++){
+        arreglo_int[i]=i;
+        pthread_create(& arreglo[i] , NULL , funcion , ( void *) &arreglo_int[i] ) ;
+    }
+        
     /*pthread_t h1 ;
     pthread_t h2 ;
     
@@ -70,7 +80,10 @@ int main(){
     pthread_join ( h1 , NULL ) ;
     pthread_join ( h2 , NULL ) ;
     printf("%d",d);*/
-    matriz_destroy(matriz);
+   
+   
+   
+    //matriz_destroy(matriz);
 
     
 
