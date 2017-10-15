@@ -173,4 +173,26 @@ void position_rand(Position* position, int row, int col){
     position->row = rand()%row;
     position->col = rand()%col;
 }
+int is_valid_position(Matriz* matriz,char* string, Position position){
+    int i;
+    if(position.col+strlen(string)-1>=matriz->col){
+        return 0;
+    }
+    for (i=0;i<strlen(string);i++){
+        if(matriz->data[position.row][i+position.col]!= '\0'){
+            return 0;
+        }
+    }
+    return 1;
+    
+}
+
+void insert_word(Matriz* matriz, char* string,Position position){
+    int i;
+    printf("insertando:%s",string);
+    for(i=0;i<strlen(string);i++){
+        matriz->data[position.row][position.col+i] = string[i]; 
+    }
+    
+}
 
