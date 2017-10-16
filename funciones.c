@@ -150,10 +150,10 @@ void hebra_destroy(Hebra* hebra){
     free(hebra);
 }
 void hebra_show(Hebra* hebra){
-    printf("int_words:%d\n",hebra->int_words);
+    printf("Cantidad de palabras: %d\n",hebra->int_words);
     int i=0;
     while (i<hebra->int_words){
-        printf("%s,",hebra->words[i]);
+        printf("%s ",hebra->words[i]);
         i++;
     }
     printf("\n");

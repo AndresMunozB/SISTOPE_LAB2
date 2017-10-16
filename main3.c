@@ -182,7 +182,7 @@ int main(int argc, char** argv){
     FILE* archivoSalida = fopen(svalue,"w");
     matriz_fill(matriz);
     if(dflag == 1){
-        printf("\n\nMatriz final: \n");
+        printf("Matriz final: \n");
         matriz_show(matriz);
     }
     matriz_print(matriz, archivoSalida);
