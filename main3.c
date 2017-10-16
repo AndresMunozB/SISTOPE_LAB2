@@ -159,8 +159,12 @@ int main(int argc, char** argv){
     for(i=0;i<hebras;i++){
         pthread_join ( hebra_array[i]->thread , NULL ) ;
     } 
+
+    FILE* archivoSalida = fopen(svalue,"w");
+
     matriz_fill(matriz);
     matriz_show(matriz);
+    matriz_print(matriz, archivoSalida);
     matriz_destroy(matriz);
     hebra_array_destroy(hebra_array);
     

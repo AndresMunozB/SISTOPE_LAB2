@@ -7,6 +7,7 @@ Matriz* matriz_create(int n,int m);
 int can_write_row(Matriz* matriz,char* string, int row);    
 void matriz_destroy(Matriz* matriz);
 void matriz_show(Matriz *matriz);
+void matriz_print(Matriz *matriz, FILE* archivo);
 char letter_min_rand();
 void matriz_fill(Matriz* matriz);
 void string_upper(char* string);

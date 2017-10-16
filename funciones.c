@@ -65,6 +65,16 @@ void matriz_show(Matriz *matriz){
     }
 }
 
+void matriz_print(Matriz *matriz, FILE* archivo){
+    int i,j;
+    for (i=0;i<matriz->row;i++){
+        for(j=0;j<matriz->col;j++){
+            fprintf(archivo,"%c",matriz->data[i][j]);
+        }
+        fprintf(archivo,"\n");
+    }
+}
+
 char letter_min_rand(){
     char random;
     random = rand()%26;
