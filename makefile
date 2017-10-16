@@ -1,3 +1,3 @@
 all:
-	gcc -o main.out main.c funciones.c -lpthread -Wall
+	gcc -o main.out main3.c funciones.c -lpthread -Wall
 	

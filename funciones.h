@@ -43,5 +43,8 @@ void position_Show(Position pos);
 Range range_generate(Position init, char* string);    
 void range_show(Range range);
 void list_show(List* list);    
+int fileExists(char* nombreArchivo);
+int verifyArguments(char* ivalue,int hvalue,int cvalue,int nvalue,int mvalue,char* svalue);
+
 #endif
         

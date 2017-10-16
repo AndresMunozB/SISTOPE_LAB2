@@ -2,6 +2,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <unistd.h>
 #include "estructuras.h"
 #include "funciones.h"
 
@@ -82,12 +84,71 @@ void* insert(void* args){
     void* ret = NULL;
     return ret;
 }
-int main(){
+int main(int argc, char** argv){
+
+    char ivalue[300]; //nombre archivo entrada
+    int hvalue; //cantidad de hebras
+    int cvalue; //cantidad de palabras
+    int nvalue; //ancho matriz
+    int mvalue; //largo matriz
+    char svalue[300]; //nombre archivo salida
+    int dflag = 0; //bandera
+    int c;
+
+    if(argc > 14){
+        printf("Sobran parametros.\n");
+        return 0;
+    }else if(argc < 13){
+        printf("Faltan parametros.\n");
+        return 0;
+    }
+
+    while ((c = getopt(argc,argv,"i:h:c:n:m:s:d")) != -1){
+        switch(c){
+            case 'i':
+                strcpy(ivalue,optarg);
+                break;
+            case 'h':
+                sscanf(optarg, "%d", &hvalue);
+                break;
+            case 'c':
+                sscanf(optarg, "%d", &cvalue);
+                break;
+            case 'n':
+                sscanf(optarg, "%d", &nvalue);
+                break;
+            case 'm':
+                sscanf(optarg, "%d", &mvalue);
+                break;;
+            case 'd':
+                dflag = 1;
+                break;
+            case 's':
+                strcpy(svalue,optarg);
+                break;
+            case '?':
+                if(isprint(optopt)){
+                    printf("Opcion desconocida.\n");   
+                    return 0;
+                }
+                else{ 
+                    printf("Opcion con caracter desconocido\n");
+                    return 0;
+                }
+            default:
+                abort();
+        }
+    }
+
+    if(verifyArguments(ivalue,hvalue,cvalue,nvalue,mvalue,svalue) == 0) 
+        return 0;
+
     srand(time(NULL));
-    int hebras=7;
-    int filas = 1;
-    int col= 50;
-    hebra_array = hebra_array_init(hebras,7,"words.txt");
+    int hebras=hvalue;
+    int filas = mvalue;
+    int col= nvalue;
+    int words = cvalue;
+    hebra_array = hebra_array_init(hebras,words,ivalue);
     //hebra_array_show(hebra_array);
     
     matriz = matriz_create2(filas,col);

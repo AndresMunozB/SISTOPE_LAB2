@@ -379,8 +379,32 @@ void list_show(List* list){
     }
 }
 
-
-
-
-
-
+int fileExists(char* nombreArchivo){
+    FILE* archivo;
+    archivo = fopen(nombreArchivo, "r");
+    if(archivo == NULL)
+        return 0;
+    else
+        return 1;
+}
+int verifyArguments(char* ivalue, int hvalue, int cvalue, int nvalue, int mvalue, char* svalue){
+    printf("ivalue = %s, hvalue = %d, cvalue = %d, nvalue = %d, mvalue = %d, svalue = %s\n", ivalue , hvalue, cvalue, nvalue, mvalue, svalue);
+    if(fileExists(ivalue) == 0){
+        printf("ERROR: Archivo no Encontrado.\n");
+        return 0;
+    }else if(hvalue <= 0){
+        printf("ERROR: Numero de hebras debe ser mayor que 0\n");
+        return 0;
+    }else if(cvalue <= 0){
+        printf("ERROR: Cantidad de palabras debe ser mayor que 0\n");
+        return 0;
+    }else if(nvalue <= 0){
+        printf("ERROR: Ancho de matriz debe ser mayor que 0\n");
+        return 0;
+    }else if(mvalue <= 0){
+        printf("ERROR: Largo de matriz debe ser mayor que 0\n");
+        return 0;
+    }
+    else 
+        return 1;
+}
