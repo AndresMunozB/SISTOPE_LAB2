@@ -125,36 +125,30 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     if(hebras<=0){
         return NULL;
     }
-    else if(hebras<=words){
-       
-        hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(hebras+1));
-        hebra_array[hebras]=NULL;
-        int j;
-        for(j=0;j<hebras;j++){
-            hebra_array[j]=(Hebra*) malloc(sizeof(Hebra));
-            hebra_array[j]->int_words = 0;
-        }
+    
+    else if(hebras>words){
+        hebras = words;
         
     }
-    else{
-        hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(words+1));
-        hebra_array[words]=NULL;
-        int j;
-        for(j=0;j<words;j++){
-            hebra_array[j]=(Hebra*) malloc(sizeof(Hebra));
-            hebra_array[j]->int_words = 0;
-        }
+    printf("%d",hebras);
+    hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(hebras+1));
+    hebra_array[hebras]=NULL;
+    int j;
+    for(j=0;j<hebras;j++){
+        hebra_array[j]=(Hebra*) malloc(sizeof(Hebra));
+        hebra_array[j]->int_words = 0;
     }
     int i=0;
     while(i<words){
         memset(buffer,0,250);
-        fgets(buffer,250,file);
-        rtrim(buffer);
-        //fscanf(file,"%s",buffer);
+        //fgets(buffer,250,file);
+        //rtrim(buffer);
+        fscanf(file,"%s",buffer);
         //if(!feof(file)){
-            strcpy(hebra_array[i%hebras]->words[hebra_array[i%hebras]->int_words],buffer);
-            hebra_array[i%hebras]->int_words++;
-            i++;
+        printf("modulo: %d",i%hebras);
+        strcpy(hebra_array[i%hebras]->words[hebra_array[i%hebras]->int_words],buffer);
+        hebra_array[i%hebras]->int_words++;
+        i++;
         //}
     }
     
