@@ -26,5 +26,22 @@ void position_rand(Position* position, int row, int col);
 int is_valid_position(Matriz* matriz,char* string, Position position);
 void insert_word(Matriz* matriz, char* string,Position position);
 
+
+Matriz* matriz_create2(int n,int m);    
+List* list_init();
+void list_add(List* list,Range range);
+int list_find(List* list,Range range);
+void list_remove(List* list,Range range);
+int list_range_valid(List* list,Range range);    
+Position position_create(int row,int col);
+Range range_create(Position init, Position fin);  
+Range range_rand(int row,int col);  
+int range_valid(Range orig,Range new);
+int range_cmp(Range r1,Range r2);
+Position position_generate(Position init, char* string);
+void position_Show(Position pos);    
+Range range_generate(Position init, char* string);    
+void range_show(Range range);
+void list_show(List* list);    
 #endif
         

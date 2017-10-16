@@ -6,8 +6,12 @@
 #include "funciones.h"
 
 
+
 Hebra** hebra_array = NULL;
-Matriz* matriz = NULL;
+Matriz* matriz = NULL;  
+
+
+
 int getIndex(){
     int index;
     int i=0;
@@ -30,39 +34,37 @@ int can_write(int* array,int n){
 }
 void* insert(void* args){
     int index=getIndex();
-    //printf("%d\n",index);
     int i;
     int not_next;
-    int array_can_rows[matriz->row];
     Position pos;
     char buffer[250];
     for (i=0;i<hebra_array[index]->int_words;i++){
-        int j=0;
-        for(j=0;j<matriz->row;j++){
-            array_can_rows[j]=1;
-            
-        }
         not_next = 1;
-        
-        int counter = 1;
-        while(can_write(array_can_rows,matriz->row) && not_next){
+        //printf("%s\n",hebra_array[index]->words[i]);
+        int counter = 0;
+        while(not_next){
             position_rand(&pos,matriz->row,matriz->col);
-            pthread_mutex_lock(&matriz->locks[pos.row]);
-            if(can_write_row(matriz,hebra_array[index]->words[i],pos.row)){
-                if(is_valid_position(matriz,hebra_array[index]->words[i],pos)){
-
-                    memset(buffer,0,250);
-                    strcpy(buffer,hebra_array[index]->words[i]);
-                    string_upper(buffer);
-                    insert_word(matriz,buffer,pos);
-                    not_next=0;
+            Range range = range_generate(pos,hebra_array[index]->words[i]);
+            if(range.fin.col<matriz->col){              
+                pthread_mutex_lock(&matriz->locks[pos.row]);
+                //list_show(matriz->wrote[pos.row]);
+                if(list_range_valid(matriz->wrote[pos.row],range) ){
+                    list_add(matriz->wrote[pos.row],range);
+                    not_next =0;
                 }
+                pthread_mutex_unlock(&matriz->locks[pos.row]);
             }
-            else{
-                array_can_rows[pos.row]=0;
+            if(not_next == 0){
+                //printf("insertando palabra\n");
+                memset(buffer,0,250);
+                strcpy(buffer,hebra_array[index]->words[i]);
+                string_upper(buffer);
+                insert_word(matriz,buffer,pos);
             }
-            counter++;
-            pthread_mutex_unlock(&matriz->locks[pos.row]);
+            if(counter == (matriz->row*matriz->col)*50){
+                not_next =0;
+            }
+            counter ++;
         }
     }
     void* ret = NULL;
@@ -70,18 +72,22 @@ void* insert(void* args){
 }
 int main(){
     srand(time(NULL));
-    int hebras=5;
+    int hebras=7;
+    int filas = 1;
+    int col= 50;
     hebra_array = hebra_array_init(hebras,7,"words.txt");
-    hebra_array_show(hebra_array);
+    //hebra_array_show(hebra_array);
     
-    matriz = matriz_create(10,10);
+    matriz = matriz_create2(filas,col);
     int i;
+    
+    
     for(i=0;i<hebras;i++){
         pthread_create(&hebra_array[i]->thread , NULL , insert , NULL );
     }
     for(i=0;i<hebras;i++){
         pthread_join ( hebra_array[i]->thread , NULL ) ;
-    }
+    } 
     matriz_fill(matriz);
     matriz_show(matriz);
     matriz_destroy(matriz);
