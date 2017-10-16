@@ -72,10 +72,11 @@ void* insert(void* args){
                     not_next = 0;
                 if(dflag == 1){
                     pthread_mutex_lock(& lockPrint);
-                    printf("%d\n",index);
-                    printf("insertando palabra:\n");
+                    printf("Hebra: %d\n",index);
+                    printf("Insertando palabra: %s\n",buffer);
                     position_Show(pos);
-                    matriz_show(matriz);   
+                    matriz_show(matriz); 
+                    printf("\n\n");  
                     pthread_mutex_unlock(&lockPrint);
                 }
 
@@ -161,8 +162,12 @@ int main(int argc, char** argv){
 
 
 
+    if(hebras > words)
+        hebras = words;
     hebra_array = hebra_array_init(hebras,words,ivalue);
-    hebra_array_show(hebra_array);
+    if(dflag == 1){
+        hebra_array_show(hebra_array);
+    }
     
     matriz = matriz_create2(filas,col);
     int i;
@@ -175,11 +180,11 @@ int main(int argc, char** argv){
     } 
 
     FILE* archivoSalida = fopen(svalue,"w");
-
-    printf("\n\nMatriz Final: \n");
-
     matriz_fill(matriz);
-    matriz_show(matriz);
+    if(dflag == 1){
+        printf("\n\nMatriz final: \n");
+        matriz_show(matriz);
+    }
     matriz_print(matriz, archivoSalida);
     matriz_destroy(matriz);
     hebra_array_destroy(hebra_array);

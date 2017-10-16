@@ -122,15 +122,7 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     Hebra** hebra_array;
     //int words_per_hebra;
     char buffer[250];
-    if(hebras<=0){
-        return NULL;
-    }
     
-    else if(hebras>words){
-        hebras = words;
-        
-    }
-    printf("%d",hebras);
     hebra_array = (Hebra**) malloc(sizeof(Hebra*)*(hebras+1));
     hebra_array[hebras]=NULL;
     int j;
@@ -145,7 +137,6 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
         //rtrim(buffer);
         fscanf(file,"%s",buffer);
         //if(!feof(file)){
-        printf("modulo: %d",i%hebras);
         strcpy(hebra_array[i%hebras]->words[hebra_array[i%hebras]->int_words],buffer);
         hebra_array[i%hebras]->int_words++;
         i++;
@@ -316,7 +307,7 @@ Position position_generate(Position init, char* string){
     return fin;
 }
 void position_Show(Position pos){
-    printf("%d,%d\n",pos.row,pos.col);
+    printf("Coordenadas: %d,%d\n",pos.row,pos.col);
 }
 Range range_generate(Position init, char* string){
     int len = strlen(string);
@@ -401,8 +392,7 @@ int fileExists(char* nombreArchivo){
         return 1;
 }
 int verifyArguments(char* ivalue, int hvalue, int cvalue, int nvalue, int mvalue, char* svalue){
-    printf("ivalue = %s, hvalue = %d, cvalue = %d, nvalue = %d, mvalue = %d, svalue = %s\n", ivalue , hvalue, cvalue, nvalue, mvalue, svalue);
-    if(fileExists(ivalue) == 0){
+   if(fileExists(ivalue) == 0){
         printf("ERROR: Archivo no Encontrado.\n");
         return 0;
     }else if(hvalue <= 0){
