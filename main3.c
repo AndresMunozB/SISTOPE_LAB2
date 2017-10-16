@@ -13,6 +13,8 @@ Hebra** hebra_array = NULL;
 Matriz* matriz = NULL;
 List** ocupando = NULL;
 List** escrito = NULL;
+pthread_mutex_t lockPrint;
+int dflag = 0; //bandera
 
 
 int getIndex(){
@@ -57,19 +59,26 @@ void* insert(void* args){
                     break;
                 }
                 pthread_mutex_lock(&matriz->locks2[pos.row][pos.col+e]);
-                if((matriz->data[pos.row][pos.col+e]) != ('\0')){
+                if((matriz->data[pos.row][pos.col+e]) != (' ')){
                     status = 0;
                     break;   
                 }
             }
             if (status == 1){
-                //printf("insertando palabra:\n");
-                //position_Show(pos);
-                memset(buffer,0,250);
-                strcpy(buffer,hebra_array[index]->words[i]);
-                string_upper(buffer);
-                insert_word(matriz,buffer,pos);
-                not_next = 0;
+                    memset(buffer,0,250);
+                    strcpy(buffer,hebra_array[index]->words[i]);
+                    string_upper(buffer);
+                    insert_word(matriz,buffer,pos);
+                    not_next = 0;
+                if(dflag == 1){
+                    pthread_mutex_lock(& lockPrint);
+                    printf("%d\n",index);
+                    printf("insertando palabra:\n");
+                    position_Show(pos);
+                    matriz_show(matriz);   
+                    pthread_mutex_unlock(&lockPrint);
+                }
+
             }
             while(e>=0){
                 pthread_mutex_unlock(&matriz->locks2[pos.row][pos.col+e]);
@@ -86,13 +95,14 @@ void* insert(void* args){
 }
 int main(int argc, char** argv){
 
+    pthread_mutex_init(&lockPrint, NULL);
+
     char ivalue[300]; //nombre archivo entrada
     int hvalue; //cantidad de hebras
     int cvalue; //cantidad de palabras
     int nvalue; //ancho matriz
     int mvalue; //largo matriz
     char svalue[300]; //nombre archivo salida
-    int dflag = 0; //bandera
     int c;
 
     if(argc > 14){
@@ -148,11 +158,15 @@ int main(int argc, char** argv){
     int filas = mvalue;
     int col= nvalue;
     int words = cvalue;
+
+
+
     hebra_array = hebra_array_init(hebras,words,ivalue);
-    //hebra_array_show(hebra_array);
+    hebra_array_show(hebra_array);
     
     matriz = matriz_create2(filas,col);
     int i;
+
     for(i=0;i<hebras;i++){
         pthread_create(&hebra_array[i]->thread , NULL , insert , NULL );
     }
@@ -161,6 +175,8 @@ int main(int argc, char** argv){
     } 
 
     FILE* archivoSalida = fopen(svalue,"w");
+
+    printf("\n\nMatriz Final: \n");
 
     matriz_fill(matriz);
     matriz_show(matriz);

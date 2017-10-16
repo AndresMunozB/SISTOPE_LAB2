@@ -58,8 +58,7 @@ void matriz_show(Matriz *matriz){
     int i,j;
     for (i=0;i<matriz->row;i++){
         for(j=0;j<matriz->col;j++){
-            //matriz->data[i][j] = 'X';
-            printf("%c",matriz->data[i][j]);
+            printf("|%c",matriz->data[i][j]);
         }
         printf("\n");
     }
@@ -82,6 +81,7 @@ char letter_min_rand(){
     return random;
 }
 
+//Llena la matriz con letras aleatorias
 void matriz_fill(Matriz* matriz){
 
     int i,j;
@@ -89,7 +89,7 @@ void matriz_fill(Matriz* matriz){
     srand(time(NULL)); 
     for (i=0;i<matriz->row;i++){
         for(j=0;j<matriz->col;j++){
-            if(matriz->data[i][j]=='\0'){
+            if(matriz->data[i][j]==' '){
                 buffer = letter_min_rand();
                 matriz->data[i][j] = buffer;
             }
@@ -97,12 +97,14 @@ void matriz_fill(Matriz* matriz){
     }
 }
 
+//Cambia el string de minusuculas a mayusculas
 void string_upper(char* string){
     int i;
     for(i=0;i<strlen(string);i++){
         string[i]=toupper(string[i]);
     }
 }
+
 
 void rtrim(char* string){
 	while(string[strlen(string)-1]==' ' 
@@ -144,7 +146,7 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
         }
     }
     int i=0;
-    while(!feof(file)){
+    while(i<words){
         memset(buffer,0,250);
         fgets(buffer,250,file);
         rtrim(buffer);
@@ -158,6 +160,7 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     
     return hebra_array;
 }
+
 void hebra_destroy(Hebra* hebra){
     free(hebra);
 }
@@ -208,7 +211,7 @@ int is_valid_position(Matriz* matriz,char* string, Position position){
         return 0;
     }
     for (i=0;i<strlen(string);i++){
-        if(matriz->data[position.row][i+position.col]!= '\0'){
+        if(matriz->data[position.row][i+position.col]!= ' '){
             //printf("caracter no vacio:%c-%d,%d",matriz->data[position.row][i+position.col],position.row,position.col);
             return 0;
         }
@@ -227,6 +230,7 @@ void insert_word(Matriz* matriz, char* string,Position position){
 }
 
 Matriz* matriz_create2(int n,int m){
+    int a,b;
     Matriz* matriz = (Matriz*) malloc(sizeof(Matriz));
     matriz->row = n;
     matriz->col = m;
@@ -236,7 +240,7 @@ Matriz* matriz_create2(int n,int m){
     matriz->wrote = (List**) malloc(sizeof(List*)*n);
     int i,j;
     for(i=0;i<n;i++){
-        matriz->data[i] = (char*) calloc (m,sizeof(char));
+        matriz->data[i] = (char*) malloc (sizeof(char)*m);
         pthread_mutex_init(& matriz->locks[i], NULL);
         matriz->locks2[i] = (pthread_mutex_t*) malloc (sizeof(pthread_mutex_t)*m);
         matriz->wrote[i] = list_init();
@@ -244,10 +248,15 @@ Matriz* matriz_create2(int n,int m){
             pthread_mutex_init(& matriz->locks2[i][j], NULL);
         }
     }
+
+    for(a = 0; a < matriz->row; a++){
+        for(b = 0; b < matriz->col; b++){
+            matriz->data[a][b] = ' ';
+        }
+    }
     
     return matriz;
 }
-
 
 
 
