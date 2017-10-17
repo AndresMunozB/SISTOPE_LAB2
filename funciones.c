@@ -107,7 +107,7 @@ void string_upper(char* string){
 //ENTRADA: 2 enteros que corresponden a la cantidad de hebras y cantidad de palabras y un string que contiene
 // el nombre del archivo
 //SALIDA: Arreglo de dos dimensiones de Hebra (DUDA)
-//
+//Función que se encarga de inicializar la estructura de hebras
 Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     FILE* file = fopen(nameFile,"r");
     Hebra** hebra_array;
@@ -132,16 +132,16 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     return hebra_array;
 }
 
-//ENTRADA:
+//ENTRADA: Puntero a la estructura Hebra
 //SALIDA: Void (Nada)
-//
+//Esta función se encarga de liberar la memoria que utiliza la hebra.
 void hebra_destroy(Hebra* hebra){
     free(hebra);
 }
 
-//ENTRADA:
+//ENTRADA: Puntero a la estructura Hebra
 //SALIDA: Void (Nada)
-//
+//Muestra la cantidad de palabras asignadas a la hebra. 
 void hebra_show(Hebra* hebra){
     printf("Cantidad de palabras: %d\n",hebra->int_words);
     int i=0;
@@ -152,9 +152,9 @@ void hebra_show(Hebra* hebra){
     printf("\n");
 }
 
-//ENTRADA:
+//ENTRADA: Arreglo de la estructura Hebra
 //SALIDA: Void (Nada)
-//
+//Se libera la memoria que utiliza el arreglo de Hebras, llamando por cada hebra a la función anterior.
 void hebra_array_destroy(Hebra** hebra_array){
     int i=0;
     if(hebra_array==NULL){
@@ -167,9 +167,9 @@ void hebra_array_destroy(Hebra** hebra_array){
     free(hebra_array);
 }
 
-//ENTRADA:
+//ENTRADA: Arreglo de la estructura hebra
 //SALIDA: Void (Nada)
-//
+//Se encarga de mostrar cada hebra por consola. 
 void hebra_array_show(Hebra** hebra_array){
     int i=0;
     if(hebra_array==NULL){
@@ -183,24 +183,24 @@ void hebra_array_show(Hebra** hebra_array){
     }
 }
 
-//ENTRADA:
+//ENTRADA: Puntero a la estructura posicion, 2 enteros donde row representa a las filas y col a las columnas 
 //SALIDA: Void (Nada)
-//
+//Calcula una posición aleatoria. 
 void position_rand(Position* position, int row, int col){
     position->row = rand()%row;
     position->col = rand()%col;
 }
 
-//ENTRADA:
+//ENTRADA: Una posición (fila y columna)
 //SALIDA: Void (Nada)
-//
+//Se encarga de mostrar por pantalla la coordenada ingresada por parametro
 void position_show(Position pos){
     printf("Coordenadas: %d,%d\n",pos.row,pos.col);
 }
 
-//ENTRADA:
+//ENTRADA: Puntero a la estructura Matriz, un string y una posición
 //SALIDA: Void (Nada)
-//
+//Función que se encarga de insertar la palabra ingresada a la matriz en una posición
 void insert_word(Matriz* matriz, char* string,Position position){
     int i;
     //printf("insertando:%s\n",string);
@@ -209,9 +209,10 @@ void insert_word(Matriz* matriz, char* string,Position position){
     }
 }
 
-//ENTRADA:
-//SALIDA: 
-//
+//ENTRADA: String que corresponde al nombre del archivo
+//SALIDA: Entero (0 o 1)
+//Esta función se encarga de verificar si el archivo con el nombre ingresado por parámetro existe o no. 
+// Si retorna 0, el archivo no existe y en caso contrario, retorna 1. 
 int fileExists(char* nombreArchivo){
     FILE* archivo;
     archivo = fopen(nombreArchivo, "r");
@@ -221,9 +222,9 @@ int fileExists(char* nombreArchivo){
         return 1;
 }
 
-//ENTRADA:
-//SALIDA: 
-//
+//ENTRADA: Todos los valores que ingresan por parametro con getopt
+//SALIDA: Entero (0 o 1)
+//Se encarga de tomar todos los valores ingresados por consola, de verificar si se ingresaron de manera correcta o no. 
 int opt_get(int argc, char** argv,char ivalue[300],int* hvalue,int* cvalue,int* nvalue,int* mvalue,char svalue[300],int* dflag){
     if(argc > 14){
         printf("Sobran parametros.\n");
@@ -273,9 +274,9 @@ int opt_get(int argc, char** argv,char ivalue[300],int* hvalue,int* cvalue,int* 
     return 1;
 }
 
-//ENTRADA:
-//SALIDA: 
-//
+//ENTRADA: Todos los valores que ingresan por parametro con getopt
+//SALIDA: Entero (0 o 1)
+//Esta función abarca las pequeñas funciones anteriores, donde se verifican si todos los parametros cumplen las condiciones.
 int verifyArguments(char* ivalue, int hvalue, int cvalue, int nvalue, int mvalue, char* svalue){
    if(fileExists(ivalue) == 0){
         printf("ERROR: Archivo no encontrado.\n");

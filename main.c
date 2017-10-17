@@ -14,7 +14,9 @@ Matriz* matriz = NULL;
 pthread_mutex_t lockPrint;
 int dflag = 0; //bandera
 
-
+//ENTRADA: Void (nada)
+//SALIDA: Entero
+//Función se encarga de obtener y retornar el valor del id de la hebra. 
 int getIndex(){
     int index;
     int i=0;
@@ -27,6 +29,9 @@ int getIndex(){
     return index;
 }
 
+//ENTRADA: 
+//SALIDA: void (Nada)
+//Se encarga de que la hebra que llame a esta función ubique una palabra
 void* ubicar(void* args){
     int index=getIndex();
     int i;
@@ -83,6 +88,8 @@ void* ubicar(void* args){
     void* ret = NULL;
     return ret;
 }
+
+
 int main(int argc, char** argv){
 
     char ivalue[300]; //nombre archivo entrada
