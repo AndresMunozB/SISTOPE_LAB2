@@ -29,7 +29,7 @@ int getIndex(){
     return index;
 }
 
-//ENTRADA: 
+//ENTRADA: Argumentos casteados
 //SALIDA: void (Nada)
 //Se encarga de que la hebra que llame a esta función ubique una palabra
 void* ubicar(void* args){
