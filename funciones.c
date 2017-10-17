@@ -7,7 +7,9 @@
 #include "estructuras.h"
 #include "funciones.h"
 
-
+//ENTRADA: Enteros n y m, que representan las filas y columnas respectivamente
+//SALIDA: Puntero a la estructura Matriz
+//Esta función se encarga de crear una nueva matriz e inicializar cada posicion con caracter espacio.
 Matriz* matriz_create(int n,int m){
     Matriz* matriz = (Matriz*) malloc(sizeof(Matriz));
     matriz->row = n;
@@ -26,6 +28,9 @@ Matriz* matriz_create(int n,int m){
     return matriz;
 }
 
+//ENTRADA: Puntero a la estructura Matriz
+//SALIDA: Void (Nada)
+//Función se encarga de liberar la memoria utilizada por la matriz.
 void matriz_destroy(Matriz* matriz){
     int i;  
     for(i=0;i<matriz->row;i++){
@@ -36,6 +41,9 @@ void matriz_destroy(Matriz* matriz){
     free(matriz);
 }
 
+//ENTRADA: Puntero a la estructura Matriz
+//SALIDA: Void (Nada)
+//Función al cual le corresponde mostrar los datos de la matriz por consola
 void matriz_show(Matriz *matriz){
     int i,j;
     for (i=0;i<matriz->row;i++){
@@ -46,6 +54,9 @@ void matriz_show(Matriz *matriz){
     }
 }
 
+//ENTRADA: Puntero a la estructura Matriz y puntero a archivo
+//SALIDA: Void (Nada)
+//Función al cual le corresponde mostrar los datos de la matriz en un fichero de salida
 void matriz_print(Matriz *matriz, FILE* archivo){
     int i,j;
     for (i=0;i<matriz->row;i++){
@@ -56,6 +67,9 @@ void matriz_print(Matriz *matriz, FILE* archivo){
     }
 }
 
+//ENTRADA: Void (nada)
+//SALIDA: Caracter
+//Entrega una letra minuscula aleatoriamente.
 char letter_min_rand(){
     char random;
     random = rand()%26;
@@ -63,7 +77,9 @@ char letter_min_rand(){
     return random;
 }
 
-//Llena la matriz con letras aleatorias
+//ENTRADA: Puntero a la estructura Matriz
+//SALIDA: Void (Nada)
+//Función que se encarga del llenado de los espacios restantes de la matriz con letras aleatorias. 
 void matriz_fill(Matriz* matriz){
     int i,j;
     char buffer;
@@ -78,7 +94,9 @@ void matriz_fill(Matriz* matriz){
     }
 }
 
-//Cambia el string de minusuculas a mayusculas
+//ENTRADA: Puntero a un caracter (string)
+//SALIDA: Void (Nada)
+//Realiza la transformación de un string que contiene letras en minuscula a letras mayusculas
 void string_upper(char* string){
     int i;
     for(i=0;i<strlen(string);i++){
@@ -86,9 +104,10 @@ void string_upper(char* string){
     }
 }
 
-
-
-
+//ENTRADA: 2 enteros que corresponden a la cantidad de hebras y cantidad de palabras y un string que contiene
+// el nombre del archivo
+//SALIDA: Arreglo de dos dimensiones de Hebra (DUDA)
+//
 Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     FILE* file = fopen(nameFile,"r");
     Hebra** hebra_array;
@@ -113,10 +132,16 @@ Hebra** hebra_array_init(int hebras, int words, char* nameFile){
     return hebra_array;
 }
 
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void hebra_destroy(Hebra* hebra){
     free(hebra);
 }
 
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void hebra_show(Hebra* hebra){
     printf("Cantidad de palabras: %d\n",hebra->int_words);
     int i=0;
@@ -126,6 +151,10 @@ void hebra_show(Hebra* hebra){
     }
     printf("\n");
 }
+
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void hebra_array_destroy(Hebra** hebra_array){
     int i=0;
     if(hebra_array==NULL){
@@ -138,6 +167,9 @@ void hebra_array_destroy(Hebra** hebra_array){
     free(hebra_array);
 }
 
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void hebra_array_show(Hebra** hebra_array){
     int i=0;
     if(hebra_array==NULL){
@@ -151,15 +183,24 @@ void hebra_array_show(Hebra** hebra_array){
     }
 }
 
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void position_rand(Position* position, int row, int col){
     position->row = rand()%row;
     position->col = rand()%col;
 }
 
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void position_show(Position pos){
     printf("Coordenadas: %d,%d\n",pos.row,pos.col);
 }
 
+//ENTRADA:
+//SALIDA: Void (Nada)
+//
 void insert_word(Matriz* matriz, char* string,Position position){
     int i;
     //printf("insertando:%s\n",string);
@@ -168,6 +209,9 @@ void insert_word(Matriz* matriz, char* string,Position position){
     }
 }
 
+//ENTRADA:
+//SALIDA: 
+//
 int fileExists(char* nombreArchivo){
     FILE* archivo;
     archivo = fopen(nombreArchivo, "r");
@@ -176,6 +220,10 @@ int fileExists(char* nombreArchivo){
     else
         return 1;
 }
+
+//ENTRADA:
+//SALIDA: 
+//
 int opt_get(int argc, char** argv,char ivalue[300],int* hvalue,int* cvalue,int* nvalue,int* mvalue,char svalue[300],int* dflag){
     if(argc > 14){
         printf("Sobran parametros.\n");
@@ -224,6 +272,10 @@ int opt_get(int argc, char** argv,char ivalue[300],int* hvalue,int* cvalue,int* 
     }
     return 1;
 }
+
+//ENTRADA:
+//SALIDA: 
+//
 int verifyArguments(char* ivalue, int hvalue, int cvalue, int nvalue, int mvalue, char* svalue){
    if(fileExists(ivalue) == 0){
         printf("ERROR: Archivo no encontrado.\n");

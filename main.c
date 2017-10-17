@@ -27,7 +27,7 @@ int getIndex(){
     return index;
 }
 
-void* insert(void* args){
+void* ubicar(void* args){
     int index=getIndex();
     int i;
     int not_next;
@@ -92,9 +92,6 @@ int main(int argc, char** argv){
     int mvalue; //largo matriz
     char svalue[300]; //nombre archivo salida
 
-    
-    
-
     if(!opt_get( argc, argv, ivalue,&hvalue,&cvalue,&nvalue,&mvalue,svalue,&dflag))
         return 0;  
    
@@ -113,8 +110,8 @@ int main(int argc, char** argv){
     */  
 
 
-    if(hvalue > cvalue)
-        hvalue = cvalue;
+    //if(hvalue > cvalue)
+      //  hvalue = cvalue;
     hebra_array = hebra_array_init(hvalue,cvalue,ivalue);
     if(dflag == 1){
         hebra_array_show(hebra_array);
@@ -124,7 +121,7 @@ int main(int argc, char** argv){
     int i;
 
     for(i=0;i<hvalue;i++){
-        pthread_create(&hebra_array[i]->thread , NULL , insert , NULL );
+        pthread_create(&hebra_array[i]->thread , NULL , ubicar , NULL );
     }
     for(i=0;i<hvalue;i++){
         pthread_join ( hebra_array[i]->thread , NULL ) ;
