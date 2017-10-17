@@ -15,20 +15,10 @@ typedef struct hebra{
     pthread_t thread;
 }Hebra;
 
-typedef struct range{
-    Position init;
-    Position fin;
-}Range;
 
-typedef struct list{
-    Range* data;
-    int lentght;
-}List;
 typedef struct matriz{
     char **data;
-    pthread_mutex_t* locks;
-    pthread_mutex_t** locks2;
-    List** wrote;
+    pthread_mutex_t** locks;
     int row;
     int col;
 }Matriz;

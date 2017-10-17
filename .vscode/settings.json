@@ -5,6 +5,7 @@
         "funciones2.h": "c",
         "string.h": "c",
         "ctype.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "funciones.h": "c"
     }
 }
